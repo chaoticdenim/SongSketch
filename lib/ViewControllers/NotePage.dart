@@ -15,54 +15,54 @@ class NotePage extends StatefulWidget {
   _NotePageState createState() => _NotePageState();
 }
 
-class ChordDropdowns extends StatefulWidget {
-  @override
-  _ChordDropdownsState createState() {
-    return _ChordDropdownsState();
-  }
-}
+// class ChordDropdowns extends StatefulWidget {
+//   @override
+//   _ChordDropdownsState createState() {
+//     return _ChordDropdownsState();
+//   }
+// }
 
-class _ChordDropdownsState extends State<ChordDropdowns> {
-  List<String> _chordScheme = new List<String>(4);
+// class _ChordDropdownsState extends State<ChordDropdowns> {
+//   List<String> _chordScheme = new List<String>(4);
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: new Row(
-        children: <Widget>[
-          for (var i = 0; i < 4; i++)
-            DropdownButton<String>(
-                value: _chordScheme[i],
-                items: [
-                  for (var chord in [
-                    "A",
-                    "A#",
-                    "B",
-                    "C",
-                    "C#",
-                    "D",
-                    "D#",
-                    "E",
-                    "F",
-                    "F#",
-                    "G",
-                    "G#"
-                  ])
-                    DropdownMenuItem<String>(
-                      child: Text(chord),
-                      value: chord,
-                    )
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _chordScheme[i] = value;
-                  });
-                })
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: new Row(
+//         children: <Widget>[
+//           for (var i = 0; i < 4; i++)
+//             DropdownButton<String>(
+//                 value: _chordScheme[i],
+//                 items: [
+//                   for (var chord in [
+//                     "A",
+//                     "A#",
+//                     "B",
+//                     "C",
+//                     "C#",
+//                     "D",
+//                     "D#",
+//                     "E",
+//                     "F",
+//                     "F#",
+//                     "G",
+//                     "G#"
+//                   ])
+//                     DropdownMenuItem<String>(
+//                       child: Text(chord),
+//                       value: chord,
+//                     )
+//                 ],
+//                 onChanged: (value) {
+//                   setState(() {
+//                     _chordScheme[i] = value;
+//                   });
+//                 })
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _NotePageState extends State<NotePage> {
   final _titleController = TextEditingController();
@@ -74,6 +74,7 @@ class _NotePageState extends State<NotePage> {
 
   String _titleFrominitial;
   String _contentFromInitial;
+  List<String> _chordScheme;
   DateTime _lastEditedForUndo;
 
   var _editableNote;
@@ -93,6 +94,7 @@ class _NotePageState extends State<NotePage> {
 
     _titleFrominitial = widget.noteInEditing.title;
     _contentFromInitial = widget.noteInEditing.content;
+    _chordScheme = widget.noteInEditing.chords;
 
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
@@ -134,7 +136,44 @@ class _NotePageState extends State<NotePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              ChordDropdowns(),
+              Center(
+                child: new Row(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(left: 5, right: 35),
+                      child: Text("Chords"),
+                    ),
+                    for (var i = 0; i < 4; i++)
+                      DropdownButton<String>(
+                          value: _chordScheme[i],
+                          items: [
+                            for (var chord in [
+                              "A",
+                              "A#",
+                              "B",
+                              "C",
+                              "C#",
+                              "D",
+                              "D#",
+                              "E",
+                              "F",
+                              "F#",
+                              "G",
+                              "G#"
+                            ])
+                              DropdownMenuItem<String>(
+                                child: Text(chord),
+                                value: chord,
+                              )
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _chordScheme[i] = value;
+                            });
+                          })
+                  ],
+                ),
+              ),
               Flexible(
                 child: Container(
                   padding: EdgeInsets.all(5),
