@@ -81,6 +81,10 @@ class _NotePageState extends State<NotePage> {
     );
   }
 
+  Widget _makeLyricsInput(List<String> chordScheme) {
+    return Container();
+  }
+
   Widget _body(BuildContext ctx) {
     return Container(
         color: note_color,
@@ -150,26 +154,36 @@ class _NotePageState extends State<NotePage> {
               Divider(
                 color: CentralStation.borderColor,
               ),
-              Flexible(
-                  child: Container(
-                      padding: EdgeInsets.all(5),
-//    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                      child: EditableText(
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    for (var i=0; i<16; i++)
+                    TextField(
                         onChanged: (str) => {updateNoteObject()},
-                        maxLines: 300, // line limit extendable later
-                        controller: _contentController,
-                        focusNode: _contentFocus,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                        backgroundCursorColor: Colors.red,
+                        // focusNode: _contentFocus,
                         cursorColor: Colors.blue,
-                      )))
+                        decoration: InputDecoration(
+                          hintText: "Lyrics",
+                          prefixIcon: SizedBox(
+                            height: 0.0,
+                            child: Center(
+                              widthFactor: 0.0,
+                              child: Text(_chordScheme[i%4], style: Theme.of(context).textTheme.display1),
+                            ),
+                          ),
+                        ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
           left: true,
           right: true,
           top: false,
           bottom: false,
-        ));
+        )
+      );
   }
 
   Widget _pageTitle() {
