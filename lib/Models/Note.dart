@@ -23,7 +23,9 @@ class Note {
       'date_last_edited': epochFromDate(date_last_edited),
       'note_color': note_color.value,
       'is_archived': is_archived, //  for later use for integrating archiving
-      // 'chords': chords
+      'chords': jsonEncode({
+        "sequence": chords
+      }),
     };
     if (forUpdate) {
       data["id"] = this.id;
@@ -46,8 +48,10 @@ class Note {
       'date_created': epochFromDate(date_created),
       'date_last_edited': epochFromDate(date_last_edited),
       'note_color': note_color.toString(),
-      'chords': chords.toString(),
-      'is_archived': is_archived
+      'is_archived': is_archived,
+      'chords': jsonEncode({
+        "sequence": chords
+      }),
     }.toString();
   }
 }

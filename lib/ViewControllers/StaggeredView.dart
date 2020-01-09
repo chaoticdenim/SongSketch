@@ -95,7 +95,8 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
         DateTime.fromMillisecondsSinceEpoch(
             _allNotesInQueryResult[i]["date_last_edited"] * 1000),
         Color(_allNotesInQueryResult[i]["note_color"]),
-        ["A", "E", "D", "E"]));
+        jsonDecode(_allNotesInQueryResult[i]["chords"])["sequence"].cast<String>()
+        ));
   }
 
   void retrieveAllNotesFromDatabase() {

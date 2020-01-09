@@ -15,55 +15,6 @@ class NotePage extends StatefulWidget {
   _NotePageState createState() => _NotePageState();
 }
 
-// class ChordDropdowns extends StatefulWidget {
-//   @override
-//   _ChordDropdownsState createState() {
-//     return _ChordDropdownsState();
-//   }
-// }
-
-// class _ChordDropdownsState extends State<ChordDropdowns> {
-//   List<String> _chordScheme = new List<String>(4);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: new Row(
-//         children: <Widget>[
-//           for (var i = 0; i < 4; i++)
-//             DropdownButton<String>(
-//                 value: _chordScheme[i],
-//                 items: [
-//                   for (var chord in [
-//                     "A",
-//                     "A#",
-//                     "B",
-//                     "C",
-//                     "C#",
-//                     "D",
-//                     "D#",
-//                     "E",
-//                     "F",
-//                     "F#",
-//                     "G",
-//                     "G#"
-//                   ])
-//                     DropdownMenuItem<String>(
-//                       child: Text(chord),
-//                       value: chord,
-//                     )
-//                 ],
-//                 onChanged: (value) {
-//                   setState(() {
-//                     _chordScheme[i] = value;
-//                   });
-//                 })
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class _NotePageState extends State<NotePage> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
@@ -75,6 +26,7 @@ class _NotePageState extends State<NotePage> {
   String _titleFrominitial;
   String _contentFromInitial;
   List<String> _chordScheme;
+  List<String> _chordsFromInitial;
   DateTime _lastEditedForUndo;
 
   var _editableNote;
@@ -94,7 +46,8 @@ class _NotePageState extends State<NotePage> {
 
     _titleFrominitial = widget.noteInEditing.title;
     _contentFromInitial = widget.noteInEditing.content;
-    _chordScheme = widget.noteInEditing.chords;
+    _chordsFromInitial = _editableNote.chords;
+    _chordScheme = _editableNote.chords;
 
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
@@ -170,6 +123,7 @@ class _NotePageState extends State<NotePage> {
                             setState(() {
                               _chordScheme[i] = value;
                             });
+                            updateNoteObject();
                           })
                   ],
                 ),
@@ -179,19 +133,17 @@ class _NotePageState extends State<NotePage> {
                   padding: EdgeInsets.all(5),
 //          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
                   child: TextField(
-                      onChanged: (str) => {updateNoteObject()},
-                      maxLines: null,
-                      controller: _titleController,
-                      focusNode: _titleFocus,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
-                      cursorColor: Colors.blue,
-                      decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Song title"
-                    ),
+                    onChanged: (str) => {updateNoteObject()},
+                    maxLines: null,
+                    controller: _titleController,
+                    focusNode: _titleFocus,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
+                    cursorColor: Colors.blue,
+                    decoration: InputDecoration(
+                        border: InputBorder.none, hintText: "Song title"),
                   ),
                 ),
               ),
@@ -295,16 +247,14 @@ class _NotePageState extends State<NotePage> {
     _editableNote.content = _contentController.text;
     _editableNote.title = _titleController.text;
     _editableNote.note_color = note_color;
+    _editableNote.chords = _chordScheme;
     print("new content: ${_editableNote.content}");
-    print(widget.noteInEditing);
-    print(_editableNote);
-
     print("same title? ${_editableNote.title == _titleFrominitial}");
     print("same content? ${_editableNote.content == _contentFromInitial}");
 
     if (!(_editableNote.title == _titleFrominitial &&
             _editableNote.content == _contentFromInitial) ||
-        (_isNewNote)) {
+        (_isNewNote) || _editableNote.chords == _chordsFromInitial) {
       // No changes to the note
       // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
       _editableNote.date_last_edited = DateTime.now();
