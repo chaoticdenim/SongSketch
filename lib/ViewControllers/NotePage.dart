@@ -154,28 +154,19 @@ class _NotePageState extends State<NotePage> {
               Divider(
                 color: CentralStation.borderColor,
               ),
-              Expanded(
-                child: ListView(
-                  children: <Widget>[
-                    for (var i=0; i<16; i++)
-                    TextField(
+              Flexible(
+                  child: Container(
+                      padding: EdgeInsets.all(5),
+//    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
+                      child: EditableText(
                         onChanged: (str) => {updateNoteObject()},
-                        // focusNode: _contentFocus,
+                        maxLines: 300, // line limit extendable later
+                        controller: _contentController,
+                        focusNode: _contentFocus,
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                        backgroundCursorColor: Colors.red,
                         cursorColor: Colors.blue,
-                        decoration: InputDecoration(
-                          hintText: "Lyrics",
-                          prefixIcon: SizedBox(
-                            height: 0.0,
-                            child: Center(
-                              widthFactor: 0.0,
-                              child: Text(_chordScheme[i%4], style: Theme.of(context).textTheme.display1),
-                            ),
-                          ),
-                        ),
-                    ),
-                  ],
-                ),
-              )
+                      )))
             ],
           ),
           left: true,

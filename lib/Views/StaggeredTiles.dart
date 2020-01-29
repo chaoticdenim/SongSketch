@@ -16,7 +16,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   double _fontSize;
   Color tileColor;
   String title;
-  String chords;
+  List<String> chords;
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +24,21 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     _fontSize = _determineFontSizeForContent();
     tileColor = widget.note.note_color;
     title = widget.note.title;
-    chords = widget.note.chords.toString();
+    chords = widget.note.chords;
 
     return GestureDetector(
       onTap: () => _noteTapped(context),
       child: Container(
         decoration: BoxDecoration(
-            border: tileColor == Colors.white
-                ? Border.all(color: CentralStation.borderColor)
-                : null,
             color: tileColor,
-            borderRadius: BorderRadius.all(Radius.circular(8))),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            boxShadow: [ 
+              new BoxShadow(
+                color: Colors.black38,
+                blurRadius: 20.0
+              )
+            ]
+          ),
         padding: EdgeInsets.all(8),
         child: constructChild(),
       ),
@@ -81,11 +85,25 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       ),
     );
 
-    contentsOfTiles.add(AutoSizeText(
-      chords,
-      style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.w300),
-      maxLines: 1,
-    ));
+    contentsOfTiles.add(
+      Row(
+        children: <Widget>[
+          for (var chord in chords)
+          Container(
+            child: Text(
+              chord,
+              style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.w300, color: Colors.white),
+            ),
+            margin: EdgeInsets.all(5),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              color: Colors.black,
+            ),
+          )
+        ],
+      )
+    );
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
