@@ -6,6 +6,9 @@ import '../Models/Utility.dart';
 import '../Views/MoreOptionsSheet.dart';
 import 'package:share/share.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:SongSketch/Models/ChordData.dart';
 
 class NotePage extends StatefulWidget {
   final Note noteInEditing;
@@ -60,6 +63,24 @@ class _NotePageState extends State<NotePage> {
     });
   }
 
+  showPicker(BuildContext context, int i) {
+     Picker(
+        adapter: PickerDataAdapter<String>(
+          pickerdata: JsonDecoder().convert(ChordData),
+          isArray: true
+        ),
+        hideHeader: true,
+        cancel: FlatButton(onPressed: () {
+          Navigator.pop(context);
+        }, child: Icon(Icons.cancel)),
+        onConfirm: (Picker picker, List value) {
+          setState(() {
+            _chordScheme[i] = picker.getSelectedValues().join();
+          });
+        }
+    ).showDialog(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -82,7 +103,10 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _makeLyricsInput(List<String> chordScheme) {
-    return Container();
+    return Container(
+      padding: EdgeInsets.all(5),
+      
+    );
   }
 
   Widget _body(BuildContext ctx) {
@@ -95,40 +119,16 @@ class _NotePageState extends State<NotePage> {
             children: <Widget>[
               Center(
                 child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 5, right: 35),
-                      child: Text("Chords"),
-                    ),
                     for (var i = 0; i < 4; i++)
-                      DropdownButton<String>(
-                          value: _chordScheme[i],
-                          items: [
-                            for (var chord in [
-                              "A",
-                              "A#",
-                              "B",
-                              "C",
-                              "C#",
-                              "D",
-                              "D#",
-                              "E",
-                              "F",
-                              "F#",
-                              "G",
-                              "G#"
-                            ])
-                              DropdownMenuItem<String>(
-                                child: Text(chord),
-                                value: chord,
-                              )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _chordScheme[i] = value;
-                            });
-                            updateNoteObject();
-                          })
+                      RaisedButton(
+                        child: Text(_chordScheme[i], style: TextStyle(color: Colors.white),),
+                        onPressed: () {
+                          showPicker(context, i);
+                        },
+                        color: Colors.black,
+                      ),   
                   ],
                 ),
               ),

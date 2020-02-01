@@ -14,6 +14,7 @@ class MyStaggeredTile extends StatefulWidget {
 class _MyStaggeredTileState extends State<MyStaggeredTile> {
   String _content;
   double _fontSize;
+  double _chordsFontSize;
   Color tileColor;
   String title;
   List<String> chords;
@@ -25,6 +26,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     tileColor = widget.note.note_color;
     title = widget.note.title;
     chords = widget.note.chords;
+    _chordsFontSize = _determineChordFontSize();
 
     return GestureDetector(
       onTap: () => _noteTapped(context),
@@ -92,12 +94,12 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
           Container(
             child: Text(
               chord,
-              style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.w300, color: Colors.white),
+              style: TextStyle(fontSize: _chordsFontSize, fontWeight: FontWeight.w300, color: Colors.white),
             ),
-            margin: EdgeInsets.all(5),
+            margin: EdgeInsets.all(3),
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: BorderRadius.all(Radius.circular(4)),
               color: Colors.black,
             ),
           )
@@ -109,6 +111,27 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: contentsOfTiles);
+  }
+
+  double _determineChordFontSize() {
+    int chordsLength = chords.join().length;
+    double chordFontSize = 20;
+    if (chordsLength > 20) {
+      chordFontSize = 8;
+    } else if (chordsLength > 15) {
+      chordFontSize = 9;
+    } else if (chordsLength > 10) {
+      chordFontSize = 12;
+    } else if (chordsLength > 5) {
+      chordFontSize = 14;
+    } else {
+      chordFontSize = 16;
+    }
+
+    print("chords: $chordsLength");
+    print("font: $chordFontSize");
+
+    return chordFontSize;
   }
 
   double _determineFontSizeForContent() {
@@ -123,7 +146,6 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     } else if (charCount > 20) {
       fontSize = 18;
     }
-
     return fontSize;
   }
 }
