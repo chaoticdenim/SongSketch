@@ -39,15 +39,15 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
       child: new Wrap(
         children: <Widget>[
           new ListTile(
-              leading: new Icon(Icons.delete),
-              title: new Text('Delete permanently'),
+              leading: new Icon(Icons.delete, color: CentralStation.accentLight,),
+              title: new Text('Delete permanently', style: TextStyle(color: CentralStation.textColor),),
               onTap: () {
                 Navigator.of(context).pop();
                 widget.callBackOptionTapped(moreOptions.delete);
               }),
           new ListTile(
-              leading: new Icon(Icons.share),
-              title: new Text('Share'),
+              leading: new Icon(Icons.share, color: CentralStation.accentLight,),
+              title: new Text('Share', style: TextStyle(color: CentralStation.textColor),),
               onTap: () {
                 Navigator.of(context).pop();
                 widget.callBackOptionTapped(moreOptions.share);
@@ -71,7 +71,7 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
                 height: 44,
                 child: Center(
                     child: Text(CentralStation.stringForDatetime(
-                        widget.date_last_edited))),
+                        widget.date_last_edited), style: TextStyle(color: CentralStation.textColor),)),
               )
             ],
             mainAxisAlignment: MainAxisAlignment.center,

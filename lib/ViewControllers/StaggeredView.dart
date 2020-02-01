@@ -40,6 +40,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
       retrieveAllNotesFromDatabase();
     }
     return Container(
+      color: CentralStation.darkerColor,
         child: Padding(
       padding: _paddingForView(context),
       child: new StaggeredGridView.count(
@@ -58,7 +59,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   int _colForStaggeredView(BuildContext context) {
     if (widget.notesViewType == viewType.List) return 1;
     // for width larger than 600 on grid mode, return 3 irrelevant of the orientation to accommodate more notes horizontally
-    return MediaQuery.of(context).size.width > 600 ? 3 : 2;
+    return MediaQuery.of(context).size.width > 500 ? 3 : 2;
   }
 
   List<StaggeredTile> _tilesForView() {

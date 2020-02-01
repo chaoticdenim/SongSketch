@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 class CentralStation {
   static bool _updateNeeded ;
 
-  static final fontColor = Color(0xff595959);
-  static final  borderColor = Color(0xffd3d3d3) ;
+  static final textColor = Color(0xFFD8DCE7);
+  static final mutedColor = Color(0xFF7F8187);
+  static final darkColor = Color(0xFF373c44);
+  static final darkerColor = Color(0xFF1F2128);
+  static final accentLight = Color(0xFF6A77FC);
+  static final accent = Color(0xFF383E5F);
 
   static init() {
     if (_updateNeeded == null)

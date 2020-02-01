@@ -61,7 +61,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       contentsOfTiles.add(
         AutoSizeText(
           title,
-          style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold, color: CentralStation.textColor),
           maxLines: widget.note.title.length == 0 ? 1 : 3,
           textScaleFactor: 1.5,
         ),
@@ -76,7 +76,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
 
     contentsOfTiles.add(AutoSizeText(
       _content,
-      style: TextStyle(fontSize: _fontSize),
+      style: TextStyle(fontSize: _fontSize, color: CentralStation.textColor),
       maxLines: 10,
       textScaleFactor: 1.5,
     ));
@@ -95,13 +95,13 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
           Container(
             child: Text(
               chord,
-              style: TextStyle(fontSize: _chordsFontSize, fontWeight: FontWeight.w300, color: Colors.white),
+              style: TextStyle(fontSize: _chordsFontSize, fontWeight: FontWeight.w300, color: CentralStation.textColor),
             ),
             margin: EdgeInsets.all(3),
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(4)),
-              color: Colors.black,
+              color: CentralStation.accentLight,
             ),
           )
         ],

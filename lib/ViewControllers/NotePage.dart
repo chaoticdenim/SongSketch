@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:SongSketch/Models/ChordData.dart';
-import 'PreviewPage.dart';
 
 class NotePage extends StatefulWidget {
   final Note noteInEditing;
@@ -71,9 +70,10 @@ class _NotePageState extends State<NotePage> {
         ),
         hideHeader: true,
         confirmText: "OK",
+        confirmTextStyle: TextStyle(color: CentralStation.accentLight),
         cancel: FlatButton(onPressed: () {
           Navigator.pop(context);
-        }, child: Icon(Icons.cancel)),
+        }, child: Icon(Icons.cancel), color: CentralStation.accentLight,),
         onConfirm: (Picker picker, List value) {
           setState(() {
             _chordScheme[i] = picker.getSelectedValues().join();
@@ -90,7 +90,7 @@ class _NotePageState extends State<NotePage> {
         appBar: AppBar(
           brightness: Brightness.light,
           leading: BackButton(
-            color: Colors.black,
+            color: CentralStation.textColor,
           ),
           actions: _archiveAction(context),
           elevation: 1,
@@ -100,13 +100,6 @@ class _NotePageState extends State<NotePage> {
         body: _body(context),
       ),
       onWillPop: _readyToPop,
-    );
-  }
-
-  Widget _makeLyricsInput(List<String> chordScheme) {
-    return Container(
-      padding: EdgeInsets.all(5),
-      
     );
   }
 
@@ -124,11 +117,11 @@ class _NotePageState extends State<NotePage> {
                   children: <Widget>[
                     for (var i = 0; i < 4; i++)
                       RaisedButton(
-                        child: Text(_chordScheme[i], style: TextStyle(color: Colors.white),),
+                        child: Text(_chordScheme[i], style: TextStyle(color: CentralStation.textColor),),
                         onPressed: () {
                           showPicker(context, i);
                         },
-                        color: Colors.black,
+                        color: CentralStation.accentLight,
                       ),   
                   ],
                 ),
@@ -142,17 +135,20 @@ class _NotePageState extends State<NotePage> {
                     controller: _titleController,
                     focusNode: _titleFocus,
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22,
+                        color: CentralStation.textColor,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold),
-                    cursorColor: Colors.blue,
+                    cursorColor: CentralStation.accentLight,
                     decoration: InputDecoration(
-                        border: InputBorder.none, hintText: "Song title"),
+                      border: InputBorder.none,
+                      hintText: "Title",
+                      hintStyle: TextStyle(color: CentralStation.mutedColor, fontWeight: FontWeight.bold)
+                    ),
                   ),
                 ),
               ),
               Divider(
-                color: CentralStation.borderColor,
+                color: CentralStation.textColor,
               ),
               Flexible(
                 child: Container(
@@ -162,11 +158,16 @@ class _NotePageState extends State<NotePage> {
                     onChanged: (str)  {
                       updateNoteObject();
                     },
-                    maxLines: 300, // line limit extendable later
+                    maxLines: 500, // line limit extendable later
                     controller: _contentController,
                     focusNode: _contentFocus,
-                    style: TextStyle(color: Colors.black, fontSize: 20),
-                    cursorColor: Colors.blue,
+                    style: TextStyle(color: CentralStation.textColor, fontSize: 20),
+                    cursorColor: CentralStation.accentLight,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Lyrics",
+                      hintStyle: TextStyle(color: CentralStation.mutedColor, fontWeight: FontWeight.normal)
+                    ),
                   )
                 )
               ),
@@ -181,7 +182,7 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _pageTitle() {
-    return Text(_editableNote.id == -1 ? "New Song" : "Edit Song");
+    return Text(_editableNote.id == -1 ? "New Song" : "Edit Song", style: TextStyle(color: CentralStation.textColor),);
   }
 
   List<Widget> _archiveAction(BuildContext context) {
@@ -194,7 +195,7 @@ class _NotePageState extends State<NotePage> {
             onTap: () => _undo(),
             child: Icon(
               Icons.undo,
-              color: CentralStation.fontColor,
+              color: CentralStation.textColor,
             ),
           ),
         ),
@@ -208,7 +209,7 @@ class _NotePageState extends State<NotePage> {
             onTap: () => bottomSheet(context),
             child: Icon(
               Icons.more_vert,
-              color: CentralStation.fontColor,
+              color: CentralStation.textColor,
             ),
           ),
         ),
@@ -299,8 +300,8 @@ class _NotePageState extends State<NotePage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Confirm ?"),
-              content: Text("This song will be deleted permanently"),
+              title: Text("Are you sure?", style: TextStyle(color: CentralStation.darkColor),),
+              content: Text("This song will be deleted permanently", style: TextStyle(color: CentralStation.darkColor)),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
@@ -309,13 +310,17 @@ class _NotePageState extends State<NotePage> {
                       Navigator.of(context).pop();
                       noteDB.deleteNote(_editableNote);
                       CentralStation.updateNeeded = true;
-                      Navigator.of(context).pop();
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
-                    child: Text("Yes")),
+                    child: Text("Yes"),
+                    textColor: CentralStation.accentLight,
+                ),
                 FlatButton(
                     onPressed: () => {Navigator.of(context).pop()},
-                    child: Text("No"))
-              ],
+                    child: Text("No"),
+                    textColor: CentralStation.accentLight,
+                  ),
+                ],
             );
           });
     }

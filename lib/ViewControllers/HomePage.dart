@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   var notesViewType ;
   @override void initState() {
-    notesViewType = viewType.Staggered;
+    notesViewType = viewType.List;
   }
 
   @override
@@ -28,15 +28,19 @@ class _HomePageState extends State<HomePage> {
     return
        Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(brightness: Brightness.light,
+      appBar: AppBar(brightness: Brightness.dark,
         actions: _appBarActions(),
         elevation: 1,
-        backgroundColor: Colors.white,
+        backgroundColor: CentralStation.darkerColor,
         centerTitle: true,
-        title: Text("Songs"),
+        title: Text("Song Sketches", style: TextStyle(color: CentralStation.textColor)),
       ),
       body: SafeArea(child:   _body(), right: true, left:  true, top: true, bottom: true,),
-      bottomSheet: _bottomBar(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _newNoteTapped(context),
+        child: Icon(Icons.add_circle),
+        backgroundColor: CentralStation.accentLight,
+      ),
     );
 
   }
@@ -46,25 +50,9 @@ class _HomePageState extends State<HomePage> {
     return Container(child: StaggeredGridPage(notesViewType: notesViewType,));
   }
 
-  Widget _bottomBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FlatButton(
-          child: Text(
-            "New Song\n",
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-          ),
-          onPressed: () => _newNoteTapped(context),
-        )
-      ],
-    );
-  }
-
-
   void _newNoteTapped(BuildContext ctx) {
     // "-1" id indicates the note is not new
-    var emptyNote = new Note(-1, "", "", DateTime.now(), DateTime.now(), Colors.white, ["A", "D", "E", "A"]);
+    var emptyNote = new Note(-1, "", "", DateTime.now(), DateTime.now(), CentralStation.darkColor, ["A", "D", "E", "A"]);
     Navigator.push(ctx,MaterialPageRoute(builder: (ctx) => NotePage(emptyNote)));
   }
 
@@ -92,7 +80,7 @@ List<Widget> _appBarActions() {
             onTap: () => _toggleViewType() ,
             child: Icon(
               notesViewType == viewType.List ?  Icons.developer_board : Icons.view_headline,
-              color: CentralStation.fontColor,
+              color: CentralStation.textColor,
             ),
           ),
         ),

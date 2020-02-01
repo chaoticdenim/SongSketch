@@ -1,3 +1,4 @@
+import 'package:SongSketch/Models/Utility.dart';
 import 'package:flutter/material.dart';
 import 'ViewControllers/HomePage.dart';
 import 'package:flutter/rendering.dart';
@@ -13,14 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'SongSketch',
-      theme: ThemeData(
-        fontFamily: "Roboto",
-        iconTheme: IconThemeData(color: Colors.black),
-        primaryTextTheme: TextTheme(
-          title: TextStyle(color: Colors.black),
-        ),
-        primarySwatch: Colors.blue,
-      ),
       home: HomePage(),
 
     );

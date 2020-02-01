@@ -32,7 +32,7 @@ class _PreviewPageState extends State<PreviewPage> {
         title: Text(title),
         brightness: Brightness.light,
           leading: BackButton(
-            color: Colors.black,
+            color: CentralStation.textColor,
           ),
         backgroundColor: color,
         elevation: 1,
@@ -44,15 +44,16 @@ class _PreviewPageState extends State<PreviewPage> {
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotePage(note))),
                   child: Icon(
                     Icons.edit,
-                    color: CentralStation.fontColor,
+                    color: CentralStation.textColor,
                   ),
                 ),
               ),
             ),
         ],
       ),
-      body: Center(
-        child: Scrollbar(
+      body: Container(
+        color: color,
+        child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,8 +75,8 @@ class _PreviewPageState extends State<PreviewPage> {
       list.add(TextSpan(
         text: "${chords[i%chords.length]}",
         style: TextStyle(
-          color: Colors.white,
-          backgroundColor: Colors.black,
+          color: CentralStation.accentLight,
+          fontWeight: FontWeight.bold,
           fontSize: 30
         )
       ));
@@ -83,7 +84,7 @@ class _PreviewPageState extends State<PreviewPage> {
       list.add(TextSpan(
         text: " ${lines[i]}\n",
         style: TextStyle(
-          color: Colors.black,
+          color: CentralStation.textColor,
           fontSize: 20
         )
       ));
@@ -93,7 +94,7 @@ class _PreviewPageState extends State<PreviewPage> {
       text: TextSpan(
         text: "\n",
         style: TextStyle(
-          color: Colors.blue,
+          color: CentralStation.accentLight,
           fontSize: 20,
         ),
         children: list
