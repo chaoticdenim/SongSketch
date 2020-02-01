@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class Note {
   int id;
   String title;
-  String content;
+  List<List<String>> content;
   DateTime date_created;
   DateTime date_last_edited;
   Color note_color;
@@ -18,7 +18,7 @@ class Note {
     var data = {
 //      'id': id,  since id is auto incremented in the database we don't need to send it to the insert query.
       'title': utf8.encode(title),
-      'content': utf8.encode(content),
+      'content': jsonEncode(content),
       'date_created': epochFromDate(date_created),
       'date_last_edited': epochFromDate(date_last_edited),
       'note_color': note_color.value,
@@ -44,7 +44,7 @@ class Note {
     return {
       'id': id,
       'title': title,
-      'content': content,
+      'content': content.toString(),
       'date_created': epochFromDate(date_created),
       'date_last_edited': epochFromDate(date_last_edited),
       'note_color': note_color.toString(),

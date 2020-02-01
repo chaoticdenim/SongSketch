@@ -20,7 +20,6 @@ class NotePage extends StatefulWidget {
 
 class _NotePageState extends State<NotePage> {
   final _titleController = TextEditingController();
-  final _contentController = TextEditingController();
   var note_color;
   bool _isNewNote = false;
   final _titleFocus = FocusNode();
@@ -31,6 +30,8 @@ class _NotePageState extends State<NotePage> {
   List<String> _chordScheme;
   List<String> _chordsFromInitial;
   DateTime _lastEditedForUndo;
+  var _lyrics;
+  var _lyricsFromInitial;
 
   var _editableNote;
 
@@ -43,14 +44,14 @@ class _NotePageState extends State<NotePage> {
   void initState() {
     _editableNote = widget.noteInEditing;
     _titleController.text = _editableNote.title;
-    _contentController.text = _editableNote.content;
     note_color = _editableNote.note_color;
     _lastEditedForUndo = widget.noteInEditing.date_last_edited;
 
     _titleFrominitial = widget.noteInEditing.title;
-    _contentFromInitial = widget.noteInEditing.content;
     _chordsFromInitial = _editableNote.chords;
     _chordScheme = _editableNote.chords;
+    _lyricsFromInitial = _editableNote.lyrics;
+    _lyrics = _editableNote.lyrics;
 
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
@@ -61,6 +62,11 @@ class _NotePageState extends State<NotePage> {
       print("editable note id: ${_editableNote.id}");
       _persistData();
     });
+  }
+
+  buildLyrics(int verseNo, int chordNo, String newLyrics) {
+    _lyrics[verseNo][chordNo] = newLyrics;
+    updateNoteObject();
   }
 
   showPicker(BuildContext context, int i) {
@@ -102,10 +108,42 @@ class _NotePageState extends State<NotePage> {
     );
   }
 
-  Widget _makeLyricsInput(List<String> chordScheme) {
+  String getLyrics(int verseNo, int chordNo) {
+    String res;
+    try {
+      res = _lyrics[verseNo][chordNo];
+    } catch (e) {
+      res = "";
+    }
+    return res;
+  }
+
+  Widget _makeLyricsInput() {
     return Container(
       padding: EdgeInsets.all(5),
-      
+      child: ListView(
+        padding: const EdgeInsets.all(8),
+        children: <Widget>[
+          for (var verseNo=0; verseNo < 16; verseNo+=1)
+            for (var chord=0; chord < _chordScheme.length; chord+=1)
+              TextFormField(
+                initialValue: getLyrics(verseNo, chord),
+                onChanged: (str) => buildLyrics(verseNo, chord, str),
+                decoration: InputDecoration(
+                  prefixIcon: Container(
+                    padding: EdgeInsets.fromLTRB(30, 0, 40, 0),
+                    child: Center(
+                      widthFactor: 0.0,
+                      child: Text(
+                        _chordScheme[chord],
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+        ],
+      ),
     );
   }
 
@@ -155,18 +193,8 @@ class _NotePageState extends State<NotePage> {
                 color: CentralStation.borderColor,
               ),
               Flexible(
-                  child: Container(
-                      padding: EdgeInsets.all(5),
-//    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                      child: EditableText(
-                        onChanged: (str) => {updateNoteObject()},
-                        maxLines: 300, // line limit extendable later
-                        controller: _contentController,
-                        focusNode: _contentFocus,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                        backgroundCursorColor: Colors.red,
-                        cursorColor: Colors.blue,
-                      )))
+                  child: _makeLyricsInput(),
+              )
             ],
           ),
           left: true,
@@ -229,8 +257,7 @@ class _NotePageState extends State<NotePage> {
 
   void _persistData() {
     updateNoteObject();
-
-    if (_editableNote.content.isNotEmpty) {
+    if (_editableNote.lyrics.isNotEmpty) {
       var noteDB = NotesDBHandler();
 
       if (_editableNote.id == -1) {
@@ -249,17 +276,17 @@ class _NotePageState extends State<NotePage> {
 
 // this function will ne used to save the updated editing value of the note to the local variables as user types
   void updateNoteObject() {
-    _editableNote.content = _contentController.text;
     _editableNote.title = _titleController.text;
     _editableNote.note_color = note_color;
     _editableNote.chords = _chordScheme;
+    _editableNote.lyrics = _lyrics;
     print("new content: ${_editableNote.content}");
     print("same title? ${_editableNote.title == _titleFrominitial}");
     print("same content? ${_editableNote.content == _contentFromInitial}");
 
     if (!(_editableNote.title == _titleFrominitial &&
             _editableNote.content == _contentFromInitial) ||
-        (_isNewNote) || _editableNote.chords == _chordsFromInitial) {
+        (_isNewNote) || _editableNote.chords == _chordsFromInitial || _editableNote.lyrics == _lyricsFromInitial) {
       // No changes to the note
       // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
       _editableNote.date_last_edited = DateTime.now();
