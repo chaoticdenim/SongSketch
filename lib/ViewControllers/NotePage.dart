@@ -70,6 +70,7 @@ class _NotePageState extends State<NotePage> {
           isArray: true
         ),
         hideHeader: true,
+        confirmText: "OK",
         cancel: FlatButton(onPressed: () {
           Navigator.pop(context);
         }, child: Icon(Icons.cancel)),
@@ -135,7 +136,6 @@ class _NotePageState extends State<NotePage> {
               Flexible(
                 child: Container(
                   padding: EdgeInsets.all(5),
-//          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
                   child: TextField(
                     onChanged: (str) => {updateNoteObject()},
                     maxLines: null,
@@ -155,18 +155,20 @@ class _NotePageState extends State<NotePage> {
                 color: CentralStation.borderColor,
               ),
               Flexible(
-                  child: Container(
-                      padding: EdgeInsets.all(5),
+                child: Container(
+                  padding: EdgeInsets.all(5),
 //    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                      child: EditableText(
-                        onChanged: (str) => {updateNoteObject()},
-                        maxLines: 300, // line limit extendable later
-                        controller: _contentController,
-                        focusNode: _contentFocus,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                        backgroundCursorColor: Colors.red,
-                        cursorColor: Colors.blue,
-                      )))
+                  child: EditableText(
+                    onChanged: (str) => {updateNoteObject()},
+                    maxLines: 300, // line limit extendable later
+                    controller: _contentController,
+                    focusNode: _contentFocus,
+                    style: TextStyle(color: Colors.black, fontSize: 20),
+                    backgroundCursorColor: Colors.red,
+                    cursorColor: Colors.blue,
+                  )
+                )
+              )
             ],
           ),
           left: true,
