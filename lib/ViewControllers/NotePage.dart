@@ -29,7 +29,6 @@ class _NotePageState extends State<NotePage> {
 
   String _titleFrominitial;
   String _contentFromInitial;
-  String _previewText = "";
   List<String> _chordScheme;
   List<String> _chordsFromInitial;
   DateTime _lastEditedForUndo;
@@ -53,8 +52,6 @@ class _NotePageState extends State<NotePage> {
     _contentFromInitial = widget.noteInEditing.content;
     _chordsFromInitial = _editableNote.chords;
     _chordScheme = _editableNote.chords;
-    buildPreviewText(_contentController.text);
-
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
     }
@@ -63,16 +60,6 @@ class _NotePageState extends State<NotePage> {
       print("5 seconds passed");
       print("editable note id: ${_editableNote.id}");
       _persistData();
-    });
-  }
-
-  buildPreviewText(String text) {
-    List<String> lyrics = text.split("\n");
-    for (var i=0; i < lyrics.length; i++) {
-      lyrics[i] = "${_chordScheme[i%_chordScheme.length]} ${lyrics[i]}";
-    }
-    setState(() {
-      _previewText = lyrics.join("\n");
     });
   }
 
@@ -167,15 +154,6 @@ class _NotePageState extends State<NotePage> {
               Divider(
                 color: CentralStation.borderColor,
               ),
-              Container(
-                padding: EdgeInsets.all(5),
-//    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                child: FlatButton(
-                  child: Text("Preview", style: TextStyle(color: Colors.white),),
-                  onPressed: () => Navigator.push(ctx, MaterialPageRoute(builder: (ctx) => PreviewPage(_editableNote))),
-                  color: Colors.black,
-                ),
-              ),
               Flexible(
                 child: Container(
                   padding: EdgeInsets.all(5),
@@ -183,7 +161,6 @@ class _NotePageState extends State<NotePage> {
                   child: TextField(
                     onChanged: (str)  {
                       updateNoteObject();
-                      buildPreviewText(str);
                     },
                     maxLines: 300, // line limit extendable later
                     controller: _contentController,

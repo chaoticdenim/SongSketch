@@ -1,3 +1,4 @@
+import 'package:SongSketch/ViewControllers/PreviewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../ViewControllers/NotePage.dart';
@@ -50,7 +51,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   void _noteTapped(BuildContext ctx) {
     CentralStation.updateNeeded = false;
     Navigator.push(
-        ctx, MaterialPageRoute(builder: (ctx) => NotePage(widget.note)));
+        ctx, MaterialPageRoute(builder: (ctx) => PreviewPage(widget.note)));
   }
 
   Widget constructChild() {

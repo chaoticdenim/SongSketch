@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../Models/Utility.dart';
 import 'package:SongSketch/Models/Note.dart';
+import 'NotePage.dart';
 
 class PreviewPage extends StatefulWidget {
   final Note noteToPreview;
@@ -13,10 +15,14 @@ class _PreviewPageState extends State<PreviewPage> {
   String text;
   String title;
   Color color;
+  List<String> chords;
+  Note note;
   @override void initState() {
     text = widget.noteToPreview.content;
     title = widget.noteToPreview.title;
     color = widget.noteToPreview.note_color;
+    chords = widget.noteToPreview.chords;
+    note = widget.noteToPreview;
   }
 
   @override
@@ -30,12 +36,68 @@ class _PreviewPageState extends State<PreviewPage> {
           ),
         backgroundColor: color,
         elevation: 1,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+              child: InkWell(
+                child: GestureDetector(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotePage(note))),
+                  child: Icon(
+                    Icons.edit,
+                    color: CentralStation.fontColor,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
       body: Center(
-        child: Text(
-          text
-        ),
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                makeText(text)                
+              ],
+            )
+          ),
+        )
       ),
+    );
+  }
+
+  makeText(text) {
+    List<String> lines = text.split("\n").where((s) => !s.isEmpty).toList();
+    List<TextSpan> list = new List<TextSpan>();
+
+    for (var i=0; i < lines.length; i++) {
+      list.add(TextSpan(
+        text: "${chords[i%chords.length]}",
+        style: TextStyle(
+          color: Colors.white,
+          backgroundColor: Colors.black,
+          fontSize: 30
+        )
+      ));
+
+      list.add(TextSpan(
+        text: " ${lines[i]}\n",
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 20
+        )
+      ));
+    }
+
+    return RichText(
+      text: TextSpan(
+        text: "\n",
+        style: TextStyle(
+          color: Colors.blue,
+          fontSize: 20,
+        ),
+        children: list
+      )
     );
   }
 }
