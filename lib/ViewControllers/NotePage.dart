@@ -91,6 +91,7 @@ class _NotePageState extends State<NotePage> {
           brightness: Brightness.light,
           leading: BackButton(
             color: CentralStation.textColor,
+            onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
           ),
           actions: _archiveAction(context),
           elevation: 1,
