@@ -1,13 +1,13 @@
 import 'package:SongSketch/ViewControllers/PreviewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '../ViewControllers/NotePage.dart';
-import '../Models/Note.dart';
+import '../ViewControllers/SongPage.dart';
+import '../Models/Song.dart';
 import '../Models/Utility.dart';
 
 class MyStaggeredTile extends StatefulWidget {
-  final Note note;
-  MyStaggeredTile(this.note);
+  final Song song;
+  MyStaggeredTile(this.song);
   @override
   _MyStaggeredTileState createState() => _MyStaggeredTileState();
 }
@@ -22,15 +22,15 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
 
   @override
   Widget build(BuildContext context) {
-    _content = widget.note.content;
+    _content = widget.song.content;
     _fontSize = _determineFontSizeForContent();
-    tileColor = widget.note.note_color;
-    title = widget.note.title;
-    chords = widget.note.chords;
+    tileColor = widget.song.song_color;
+    title = widget.song.title;
+    chords = widget.song.chords;
     _chordsFontSize = _determineChordFontSize();
 
     return GestureDetector(
-      onTap: () => _noteTapped(context),
+      onTap: () => _songTapped(context),
       child: Container(
         decoration: BoxDecoration(
             color: tileColor,
@@ -48,21 +48,21 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     );
   }
 
-  void _noteTapped(BuildContext ctx) {
+  void _songTapped(BuildContext ctx) {
     CentralStation.updateNeeded = false;
     Navigator.push(
-        ctx, MaterialPageRoute(builder: (ctx) => PreviewPage(widget.note)));
+        ctx, MaterialPageRoute(builder: (ctx) => PreviewPage(widget.song)));
   }
 
   Widget constructChild() {
     List<Widget> contentsOfTiles = [];
 
-    if (widget.note.title.length != 0) {
+    if (widget.song.title.length != 0) {
       contentsOfTiles.add(
         AutoSizeText(
           title,
           style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold, color: CentralStation.textColor),
-          maxLines: widget.note.title.length == 0 ? 1 : 3,
+          maxLines: widget.song.title.length == 0 ? 1 : 3,
           textScaleFactor: 1.5,
         ),
       );
@@ -136,7 +136,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   }
 
   double _determineFontSizeForContent() {
-    int charCount = _content.length + widget.note.title.length;
+    int charCount = _content.length + widget.song.title.length;
     double fontSize = 20;
     if (charCount > 110) {
       fontSize = 12;

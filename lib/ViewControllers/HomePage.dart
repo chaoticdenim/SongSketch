@@ -1,8 +1,7 @@
-import 'package:SongSketch/ViewControllers/PreviewPage.dart';
 import 'package:flutter/material.dart';
 import 'StaggeredView.dart';
-import '../Models/Note.dart';
-import 'NotePage.dart';
+import '../Models/Song.dart';
+import 'SongPage.dart';
 import '../Models/Utility.dart';
 
 enum viewType {
@@ -17,9 +16,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  var notesViewType ;
+  var songsViewType ;
   @override void initState() {
-    notesViewType = viewType.List;
+    songsViewType = viewType.List;
   }
 
   @override
@@ -37,7 +36,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(child:   _body(), right: true, left:  true, top: true, bottom: true,),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _newNoteTapped(context),
+        onPressed: () => _newSongTapped(context),
         child: Icon(Icons.add_circle),
         backgroundColor: CentralStation.accentLight,
       ),
@@ -46,25 +45,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _body() {
-    print(notesViewType);
-    return Container(child: StaggeredGridPage(notesViewType: notesViewType,));
+    print(songsViewType);
+    return Container(child: StaggeredGridPage(songsViewType: songsViewType,));
   }
 
-  void _newNoteTapped(BuildContext ctx) {
-    // "-1" id indicates the note is not new
-    var emptyNote = new Note(-1, "", "", DateTime.now(), DateTime.now(), CentralStation.darkColor, ["A", "D", "E", "A"]);
-    Navigator.push(ctx,MaterialPageRoute(builder: (ctx) => NotePage(emptyNote)));
+  void _newSongTapped(BuildContext ctx) {
+    // "-1" id indicates the song is not new
+    var emptySong = new Song(-1, "", "", DateTime.now(), DateTime.now(), CentralStation.darkColor, ["A", "D", "E", "A"]);
+    Navigator.push(ctx,MaterialPageRoute(builder: (ctx) => SongPage(emptySong)));
   }
 
   void _toggleViewType(){
     setState(() {
       CentralStation.updateNeeded = true;
-      if(notesViewType == viewType.List)
+      if(songsViewType == viewType.List)
         {
-          notesViewType = viewType.Staggered;
+          songsViewType = viewType.Staggered;
 
         } else {
-        notesViewType = viewType.List;
+        songsViewType = viewType.List;
       }
 
     });
@@ -79,7 +78,7 @@ List<Widget> _appBarActions() {
           child: GestureDetector(
             onTap: () => _toggleViewType() ,
             child: Icon(
-              notesViewType == viewType.List ?  Icons.developer_board : Icons.view_headline,
+              songsViewType == viewType.List ?  Icons.developer_board : Icons.view_headline,
               color: CentralStation.textColor,
             ),
           ),

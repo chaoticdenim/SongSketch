@@ -25,17 +25,17 @@ class MoreOptionsSheet extends StatefulWidget {
 }
 
 class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
-  var note_color;
+  var song_color;
 
   @override
   void initState() {
-    note_color = widget.color;
+    song_color = widget.color;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: this.note_color,
+      color: this.song_color,
       child: new Wrap(
         children: <Widget>[
           new ListTile(
@@ -59,8 +59,8 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
               width: MediaQuery.of(context).size.width,
               child: ColorSlider(
                 callBackColorTapped: _changeColor,
-                // call callBack from notePage here
-                noteColor: note_color, // take color from local variable
+                // call callBack from songPage here
+                songColor: song_color, // take color from local variable
               ),
             ),
           ),
@@ -84,7 +84,7 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
 
   void _changeColor(Color color) {
     setState(() {
-      this.note_color = color;
+      this.song_color = color;
       widget.callBackColorTapped(color);
     });
   }

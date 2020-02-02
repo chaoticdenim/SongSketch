@@ -2,11 +2,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'dart:async';
-import 'Note.dart';
+import 'Song.dart';
 
-class NotesDBHandler {
-  final databaseName = "notes.db";
-  final tableName = "notes";
+class SongsDBHandler {
+  final databaseName = "songs.db";
+  final tableName = "songs";
 
   final fieldMap = {
     "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
@@ -14,7 +14,7 @@ class NotesDBHandler {
     "content": "BLOB",
     "date_created": "INTEGER",
     "date_last_edited": "INTEGER",
-    "note_color": "INTEGER",
+    "song_color": "INTEGER",
     "is_archived": "INTEGER",
     "chords": "TEXT"
   };
@@ -30,7 +30,7 @@ class NotesDBHandler {
 
   initDB() async {
     var path = await getDatabasesPath();
-    var dbPath = join(path, 'notes.db');
+    var dbPath = join(path, 'songs.db');
     // ignore: argument_type_not_assignable
     Database dbConnection = await openDatabase(dbPath, version: 1,
         onCreate: (Database db, int version) async {
@@ -64,23 +64,23 @@ class NotesDBHandler {
     return path;
   }
 
-  Future<int> insertNote(Note note, bool isNew) async {
+  Future<int> insertSong(Song song, bool isNew) async {
     // Get a reference to the database
     final Database db = await database;
     print("insert called");
     print("Trying to insert..");
-    print(note.toMap(false).toString());
+    print(song.toMap(false).toString());
 
-    // Insert the Notes into the correct table.
+    // Insert the Songs into the correct table.
     await db.insert(
-      'notes',
-      isNew ? note.toMap(false) : note.toMap(true),
+      'songs',
+      isNew ? song.toMap(false) : song.toMap(true),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
     if (isNew) {
-      // get latest note which isn't archived, limit by 1
-      var one = await db.query("notes",
+      // get latest song which isn't archived, limit by 1
+      var one = await db.query("songs",
           orderBy: "date_last_edited desc",
           where: "is_archived = ?",
           whereArgs: [0],
@@ -88,26 +88,26 @@ class NotesDBHandler {
       int latestId = one.first["id"] as int;
       return latestId;
     }
-    return note.id;
+    return song.id;
   }
 
-  Future<bool> deleteNote(Note note) async {
-    if (note.id != -1) {
+  Future<bool> deleteSong(Song song) async {
+    if (song.id != -1) {
       final Database db = await database;
       try {
-        await db.delete("notes", where: "id = ?", whereArgs: [note.id]);
+        await db.delete("songs", where: "id = ?", whereArgs: [song.id]);
         return true;
       } catch (Error) {
-        print("Error deleting ${note.id}: ${Error.toString()}");
+        print("Error deleting ${song.id}: ${Error.toString()}");
         return false;
       }
     }
   }
 
-  Future<List<Map<String, dynamic>>> selectAllNotes() async {
+  Future<List<Map<String, dynamic>>> selectAllSongs() async {
     final Database db = await database;
-    // query all the notes sorted by last edited
-    var data = await db.query("notes",
+    // query all the songs sorted by last edited
+    var data = await db.query("songs",
         orderBy: "date_last_edited desc",
         where: "is_archived = ?",
         whereArgs: [0]);

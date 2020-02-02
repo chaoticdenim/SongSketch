@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class ColorSlider extends StatefulWidget {
   final void Function(Color)  callBackColorTapped ;
-  final Color noteColor ;
-  ColorSlider({@required this.callBackColorTapped, @required this.noteColor});
+  final Color songColor ;
+  ColorSlider({@required this.callBackColorTapped, @required this.songColor});
   @override
   _ColorSliderState createState() => _ColorSliderState();
 }
@@ -23,13 +23,13 @@ class _ColorSliderState extends State<ColorSlider> {
 
   final _check = Icon(Icons.check);
 
-  Color noteColor;
+  Color songColor;
   int indexOfCurrentColor;
   @override void initState() {
 
     super.initState();
-    this.noteColor = widget.noteColor;
-    indexOfCurrentColor = colors.indexOf(noteColor);
+    this.songColor = widget.songColor;
+    indexOfCurrentColor = colors.indexOf(songColor);
   }
 
 
@@ -70,7 +70,7 @@ class _ColorSliderState extends State<ColorSlider> {
 
   void _colorChangeTapped(int indexOfColor) {
     setState(() {
-      noteColor = colors[indexOfColor];
+      songColor = colors[indexOfColor];
       indexOfCurrentColor = indexOfColor;
       widget.callBackColorTapped(colors[indexOfColor]);
     });

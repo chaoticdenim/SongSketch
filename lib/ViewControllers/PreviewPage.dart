@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../Models/Utility.dart';
-import 'package:SongSketch/Models/Note.dart';
-import 'NotePage.dart';
+import 'package:SongSketch/Models/Song.dart';
+import 'SongPage.dart';
 
 class PreviewPage extends StatefulWidget {
-  final Note noteToPreview;
+  final Song songToPreview;
 
-  PreviewPage(this.noteToPreview);
+  PreviewPage(this.songToPreview);
   @override
   _PreviewPageState createState() => _PreviewPageState();
 }
@@ -16,13 +16,13 @@ class _PreviewPageState extends State<PreviewPage> {
   String title;
   Color color;
   List<String> chords;
-  Note note;
+  Song song;
   @override void initState() {
-    text = widget.noteToPreview.content;
-    title = widget.noteToPreview.title;
-    color = widget.noteToPreview.note_color;
-    chords = widget.noteToPreview.chords;
-    note = widget.noteToPreview;
+    text = widget.songToPreview.content;
+    title = widget.songToPreview.title;
+    color = widget.songToPreview.song_color;
+    chords = widget.songToPreview.chords;
+    song = widget.songToPreview;
   }
 
   @override
@@ -41,7 +41,7 @@ class _PreviewPageState extends State<PreviewPage> {
             padding: EdgeInsets.symmetric(horizontal: 12),
               child: InkWell(
                 child: GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotePage(note))),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SongPage(song))),
                   child: Icon(
                     Icons.edit,
                     color: CentralStation.textColor,

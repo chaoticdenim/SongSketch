@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Models/Note.dart';
+import '../Models/Song.dart';
 import '../Models/SqliteHandler.dart';
 import 'dart:async';
 import '../Models/Utility.dart';
@@ -10,19 +10,19 @@ import 'dart:convert';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:SongSketch/Models/ChordData.dart';
 
-class NotePage extends StatefulWidget {
-  final Note noteInEditing;
+class SongPage extends StatefulWidget {
+  final Song songInEditing;
 
-  NotePage(this.noteInEditing);
+  SongPage(this.songInEditing);
   @override
-  _NotePageState createState() => _NotePageState();
+  _SongPageState createState() => _SongPageState();
 }
 
-class _NotePageState extends State<NotePage> {
+class _SongPageState extends State<SongPage> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-  var note_color;
-  bool _isNewNote = false;
+  var song_color;
+  bool _isNewSong = false;
   final _titleFocus = FocusNode();
   final _contentFocus = FocusNode();
 
@@ -32,7 +32,7 @@ class _NotePageState extends State<NotePage> {
   List<String> _chordsFromInitial;
   DateTime _lastEditedForUndo;
 
-  var _editableNote;
+  var _editableSong;
 
   // the timer variable responsible to call persistData function every 5 seconds and cancel the timer when the page pops.
   Timer _persistenceTimer;
@@ -41,23 +41,23 @@ class _NotePageState extends State<NotePage> {
 
   @override
   void initState() {
-    _editableNote = widget.noteInEditing;
-    _titleController.text = _editableNote.title;
-    _contentController.text = _editableNote.content;
-    note_color = _editableNote.note_color;
-    _lastEditedForUndo = widget.noteInEditing.date_last_edited;
+    _editableSong = widget.songInEditing;
+    _titleController.text = _editableSong.title;
+    _contentController.text = _editableSong.content;
+    song_color = _editableSong.song_color;
+    _lastEditedForUndo = widget.songInEditing.date_last_edited;
 
-    _titleFrominitial = widget.noteInEditing.title;
-    _contentFromInitial = widget.noteInEditing.content;
-    _chordsFromInitial = _editableNote.chords;
-    _chordScheme = _editableNote.chords;
-    if (widget.noteInEditing.id == -1) {
-      _isNewNote = true;
+    _titleFrominitial = widget.songInEditing.title;
+    _contentFromInitial = widget.songInEditing.content;
+    _chordsFromInitial = _editableSong.chords;
+    _chordScheme = _editableSong.chords;
+    if (widget.songInEditing.id == -1) {
+      _isNewSong = true;
     }
     _persistenceTimer = new Timer.periodic(Duration(seconds: 5), (timer) {
       // call insert query here
       print("5 seconds passed");
-      print("editable note id: ${_editableNote.id}");
+      print("editable song id: ${_editableSong.id}");
       _persistData();
     });
   }
@@ -95,7 +95,7 @@ class _NotePageState extends State<NotePage> {
           ),
           actions: _archiveAction(context),
           elevation: 1,
-          backgroundColor: note_color,
+          backgroundColor: song_color,
           title: _pageTitle(),
         ),
         body: _body(context),
@@ -106,7 +106,7 @@ class _NotePageState extends State<NotePage> {
 
   Widget _body(BuildContext ctx) {
     return Container(
-        color: note_color,
+        color: song_color,
         padding: EdgeInsets.only(left: 16, right: 16, top: 12),
         child: SafeArea(
           child: Column(
@@ -131,7 +131,7 @@ class _NotePageState extends State<NotePage> {
                 child: Container(
                   padding: EdgeInsets.all(5),
                   child: TextField(
-                    onChanged: (str) => {updateNoteObject()},
+                    onChanged: (str) => {updateSongObject()},
                     maxLines: null,
                     controller: _titleController,
                     focusNode: _titleFocus,
@@ -157,7 +157,7 @@ class _NotePageState extends State<NotePage> {
 //    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
                   child: TextField(
                     onChanged: (str)  {
-                      updateNoteObject();
+                      updateSongObject();
                     },
                     maxLines: 500, // line limit extendable later
                     controller: _contentController,
@@ -183,12 +183,12 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _pageTitle() {
-    return Text(_editableNote.id == -1 ? "New Song" : "Edit Song", style: TextStyle(color: CentralStation.textColor),);
+    return Text(_editableSong.id == -1 ? "New Song" : "Edit Song", style: TextStyle(color: CentralStation.textColor),);
   }
 
   List<Widget> _archiveAction(BuildContext context) {
     List<Widget> actions = [];
-    if (widget.noteInEditing.id != -1) {
+    if (widget.songInEditing.id != -1) {
       actions.add(Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
         child: InkWell(
@@ -224,50 +224,50 @@ class _NotePageState extends State<NotePage> {
         context: context,
         builder: (BuildContext ctx) {
           return MoreOptionsSheet(
-            color: note_color,
+            color: song_color,
             callBackColorTapped: _changeColor,
             callBackOptionTapped: bottomSheetOptionTappedHandler,
-            date_last_edited: _editableNote.date_last_edited,
+            date_last_edited: _editableSong.date_last_edited,
           );
         });
   }
 
   void _persistData() {
-    updateNoteObject();
+    updateSongObject();
 
-    if (_editableNote.content.isNotEmpty) {
-      var noteDB = NotesDBHandler();
+    if (_editableSong.content.isSongmpty) {
+      var songDB = SongsDBHandler();
 
-      if (_editableNote.id == -1) {
+      if (_editableSong.id == -1) {
         Future<int> autoIncrementedId =
-            noteDB.insertNote(_editableNote, true); // for new note
-        // set the id of the note from the database after inserting the new note so for next persisting
+            songDB.insertSong(_editableSong, true); // for new song
+        // set the id of the song from the database after inserting the new song so for next persisting
         autoIncrementedId.then((value) {
-          _editableNote.id = value;
+          _editableSong.id = value;
         });
       } else {
-        noteDB.insertNote(
-            _editableNote, false); // for updating the existing note
+        songDB.insertSong(
+            _editableSong, false); // for updating the existing song
       }
     }
   }
 
-// this function will ne used to save the updated editing value of the note to the local variables as user types
-  void updateNoteObject() {
-    _editableNote.content = _contentController.text;
-    _editableNote.title = _titleController.text;
-    _editableNote.note_color = note_color;
-    _editableNote.chords = _chordScheme;
-    print("new content: ${_editableNote.content}");
-    print("same title? ${_editableNote.title == _titleFrominitial}");
-    print("same content? ${_editableNote.content == _contentFromInitial}");
+// this function will ne used to save the updated editing value of the song to the local variables as user types
+  void updateSongObject() {
+    _editableSong.content = _contentController.text;
+    _editableSong.title = _titleController.text;
+    _editableSong.song_color = song_color;
+    _editableSong.chords = _chordScheme;
+    print("new content: ${_editableSong.content}");
+    print("same title? ${_editableSong.title == _titleFrominitial}");
+    print("same content? ${_editableSong.content == _contentFromInitial}");
 
-    if (!(_editableNote.title == _titleFrominitial &&
-            _editableNote.content == _contentFromInitial) ||
-        (_isNewNote) || _editableNote.chords == _chordsFromInitial) {
-      // No changes to the note
-      // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
-      _editableNote.date_last_edited = DateTime.now();
+    if (!(_editableSong.title == _titleFrominitial &&
+            _editableSong.content == _contentFromInitial) ||
+        (_isNewSong) || _editableSong.chords == _chordsFromInitial) {
+      // No changes to the song
+      // Change last edit time only if the content of the song is mutated in compare to the song which the page was called with.
+      _editableSong.date_last_edited = DateTime.now();
       print("Updating date_last_edited");
       CentralStation.updateNeeded = true;
     }
@@ -278,8 +278,8 @@ class _NotePageState extends State<NotePage> {
     switch (tappedOption) {
       case moreOptions.delete:
         {
-          if (_editableNote.id != -1) {
-            _deleteNote(_globalKey.currentContext);
+          if (_editableSong.id != -1) {
+            _deleteSong(_globalKey.currentContext);
           } else {
             _exitWithoutSaving(context);
           }
@@ -287,16 +287,16 @@ class _NotePageState extends State<NotePage> {
         }
       case moreOptions.share:
         {
-          if (_editableNote.content.isNotEmpty) {
-            Share.share("${_editableNote.title}\n${_editableNote.content}");
+          if (_editableSong.content.isSongmpty) {
+            Share.share("${_editableSong.title}\n${_editableSong.content}");
           }
           break;
         }
     }
   }
 
-  void _deleteNote(BuildContext context) {
-    if (_editableNote.id != -1) {
+  void _deleteSong(BuildContext context) {
+    if (_editableSong.id != -1) {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -307,9 +307,9 @@ class _NotePageState extends State<NotePage> {
                 FlatButton(
                     onPressed: () {
                       _persistenceTimer.cancel();
-                      var noteDB = NotesDBHandler();
+                      var songDB = SongsDBHandler();
                       Navigator.of(context).pop();
-                      noteDB.deleteNote(_editableNote);
+                      songDB.deleteSong(_editableSong);
                       CentralStation.updateNeeded = true;
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     },
@@ -328,20 +328,20 @@ class _NotePageState extends State<NotePage> {
   }
 
   void _changeColor(Color newColorSelected) {
-    print("note color changed");
+    print("song color changed");
     setState(() {
-      note_color = newColorSelected;
-      _editableNote.note_color = newColorSelected;
+      song_color = newColorSelected;
+      _editableSong.song_color = newColorSelected;
     });
     _persistColorChange();
     CentralStation.updateNeeded = true;
   }
 
   void _persistColorChange() {
-    if (_editableNote.id != -1) {
-      var noteDB = NotesDBHandler();
-      _editableNote.note_color = note_color;
-      noteDB.insertNote(_editableNote, false);
+    if (_editableSong.id != -1) {
+      var songDB = SongsDBHandler();
+      _editableSong.song_color = song_color;
+      songDB.insertSong(_editableSong, false);
     }
   }
 
@@ -360,10 +360,10 @@ class _NotePageState extends State<NotePage> {
   }
 
   void _undo() {
-    _titleController.text = _titleFrominitial; // widget.noteInEditing.title;
+    _titleController.text = _titleFrominitial; // widget.songInEditing.title;
     _contentController.text =
-        _contentFromInitial; // widget.noteInEditing.content;
-    _editableNote.date_last_edited =
-        _lastEditedForUndo; // widget.noteInEditing.date_last_edited;
+        _contentFromInitial; // widget.songInEditing.content;
+    _editableSong.date_last_edited =
+        _lastEditedForUndo; // widget.songInEditing.date_last_edited;
   }
 }

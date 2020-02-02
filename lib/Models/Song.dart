@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-class Note {
+class Song {
   int id;
   String title;
   String content;
   DateTime date_created;
   DateTime date_last_edited;
-  Color note_color;
+  Color song_color;
   int is_archived = 0;
   List<String> chords;
 
-  Note(this.id, this.title, this.content, this.date_created,
-      this.date_last_edited, this.note_color, this.chords);
+  Song(this.id, this.title, this.content, this.date_created,
+      this.date_last_edited, this.song_color, this.chords);
 
   Map<String, dynamic> toMap(bool forUpdate) {
     var data = {
@@ -21,7 +21,7 @@ class Note {
       'content': utf8.encode(content),
       'date_created': epochFromDate(date_created),
       'date_last_edited': epochFromDate(date_last_edited),
-      'note_color': note_color.value,
+      'song_color': song_color.value,
       'is_archived': is_archived, //  for later use for integrating archiving
       'chords': jsonEncode({
         "sequence": chords
@@ -38,7 +38,7 @@ class Note {
     return dt.millisecondsSinceEpoch ~/ 1000;
   }
 
-// overriding toString() of the note class to print a better debug description of this custom class
+// overriding toString() of the song class to print a better debug description of this custom class
   @override
   toString() {
     return {
@@ -47,7 +47,7 @@ class Note {
       'content': content,
       'date_created': epochFromDate(date_created),
       'date_last_edited': epochFromDate(date_last_edited),
-      'note_color': note_color.toString(),
+      'song_color': song_color.toString(),
       'is_archived': is_archived,
       'chords': jsonEncode({
         "sequence": chords

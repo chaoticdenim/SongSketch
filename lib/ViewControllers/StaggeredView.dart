@@ -1,34 +1,34 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../Models/Note.dart';
+import '../Models/Song.dart';
 import '../Models/SqliteHandler.dart';
 import '../Models/Utility.dart';
 import '../Views/StaggeredTiles.dart';
 import 'HomePage.dart';
 
 class StaggeredGridPage extends StatefulWidget {
-  final notesViewType;
-  const StaggeredGridPage({Key key, this.notesViewType}) : super(key: key);
+  final songsViewType;
+  const StaggeredGridPage({Key key, this.songsViewType}) : super(key: key);
   @override
   _StaggeredGridPageState createState() => _StaggeredGridPageState();
 }
 
 class _StaggeredGridPageState extends State<StaggeredGridPage> {
-  var noteDB = NotesDBHandler();
-  List<Map<String, dynamic>> _allNotesInQueryResult = [];
-  viewType notesViewType;
+  var songDB = SongsDBHandler();
+  List<Map<String, dynamic>> _allSongsInQueryResult = [];
+  viewType songsViewType;
 
   @override
   void initState() {
     super.initState();
-    this.notesViewType = widget.notesViewType;
+    this.songsViewType = widget.songsViewType;
   }
 
   @override
   void setState(fn) {
     super.setState(fn);
-    this.notesViewType = widget.notesViewType;
+    this.songsViewType = widget.songsViewType;
   }
 
   @override
@@ -37,7 +37,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
 
     print("update needed?: ${CentralStation.updateNeeded}");
     if (CentralStation.updateNeeded) {
-      retrieveAllNotesFromDatabase();
+      retrieveAllSongsFromDatabase();
     }
     return Container(
       color: CentralStation.darkerColor,
@@ -48,7 +48,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
         crossAxisSpacing: 6,
         mainAxisSpacing: 6,
         crossAxisCount: _colForStaggeredView(context),
-        children: List.generate(_allNotesInQueryResult.length, (i) {
+        children: List.generate(_allSongsInQueryResult.length, (i) {
           return _tileGenerator(i);
         }),
         staggeredTiles: _tilesForView(),
@@ -57,14 +57,14 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   }
 
   int _colForStaggeredView(BuildContext context) {
-    if (widget.notesViewType == viewType.List) return 1;
-    // for width larger than 600 on grid mode, return 3 irrelevant of the orientation to accommodate more notes horizontally
+    if (widget.songsViewType == viewType.List) return 1;
+    // for width larger than 600 on grid mode, return 3 irrelevant of the orientation to accommodate more songs horizontally
     return MediaQuery.of(context).size.width > 500 ? 3 : 2;
   }
 
   List<StaggeredTile> _tilesForView() {
     // Generate staggered tiles for the view based on the current preference.
-    return List.generate(_allNotesInQueryResult.length, (index) {
+    return List.generate(_allSongsInQueryResult.length, (index) {
       return StaggeredTile.fit(1);
     });
   }
@@ -83,29 +83,29 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   }
 
   MyStaggeredTile _tileGenerator(int i) {
-    return MyStaggeredTile(Note(
-        _allNotesInQueryResult[i]["id"],
-        _allNotesInQueryResult[i]["title"] == null
+    return MyStaggeredTile(Song(
+        _allSongsInQueryResult[i]["id"],
+        _allSongsInQueryResult[i]["title"] == null
             ? ""
-            : utf8.decode(_allNotesInQueryResult[i]["title"]),
-        _allNotesInQueryResult[i]["content"] == null
+            : utf8.decode(_allSongsInQueryResult[i]["title"]),
+        _allSongsInQueryResult[i]["content"] == null
             ? ""
-            : utf8.decode(_allNotesInQueryResult[i]["content"]),
+            : utf8.decode(_allSongsInQueryResult[i]["content"]),
         DateTime.fromMillisecondsSinceEpoch(
-            _allNotesInQueryResult[i]["date_created"] * 1000),
+            _allSongsInQueryResult[i]["date_created"] * 1000),
         DateTime.fromMillisecondsSinceEpoch(
-            _allNotesInQueryResult[i]["date_last_edited"] * 1000),
-        Color(_allNotesInQueryResult[i]["note_color"]),
-        jsonDecode(_allNotesInQueryResult[i]["chords"])["sequence"].cast<String>()
+            _allSongsInQueryResult[i]["date_last_edited"] * 1000),
+        Color(_allSongsInQueryResult[i]["song_color"]),
+        jsonDecode(_allSongsInQueryResult[i]["chords"])["sequence"].cast<String>()
         ));
   }
 
-  void retrieveAllNotesFromDatabase() {
-    // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
-    var _testData = noteDB.selectAllNotes();
+  void retrieveAllSongsFromDatabase() {
+    // queries for all the songs from the database ordered by latest edited song. excludes archived songs.
+    var _testData = songDB.selectAllSongs();
     _testData.then((value) {
       setState(() {
-        this._allNotesInQueryResult = value;
+        this._allSongsInQueryResult = value;
         CentralStation.updateNeeded = false;
       });
     });
